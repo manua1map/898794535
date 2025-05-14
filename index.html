@@ -1,1 +1,37 @@
-<h1>hello world</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Key Access</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div id="content" style="display: none;">
+    <h1>Welcome!</h1>
+    <p>You came from the correct URL shortener.</p>
+  </div>
+
+  <div id="blocked" style="display: none;">
+    <h1>Access Denied</h1>
+    <p>Please use the correct link via <strong>https://tpi.li/</strong></p>
+  </div>
+
+  <script>
+    const referrer = document.referrer;
+    const allowedRef = "tpi.li";
+
+    if (referrer.includes(allowedRef)) {
+      document.getElementById("content").style.display = "block";
+    } else {
+      document.getElementById("blocked").style.display = "block";
+    }
+  </script>
+</body>
+</html>
