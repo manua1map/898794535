@@ -18,18 +18,19 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
   <div id="content" class="hidden bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
     <h1 class="text-2xl font-bold text-gray-800 mb-4">RW Access Key</h1>
-    <p class="text-gray-600 mb-2">Your key:</p>
+    <p class="text-gray-600 mb-2">Your key: </p>
     <code id="keyBox" class="block bg-gray-800 text-white p-4 rounded-lg text-sm break-all">Generating...</code>
   </div>
 
   <div id="blocked" class="hidden bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
-    <h1 class="text-2xl font-bold text-red-600 mb-4">RW Access Key</h1>
-    <p class="text-gray-600">Access denied.</p>
+    <h1 class="text-2xl font-bold text-blue-600 mb-4">RW Access Key | Redirecting...</h1>
+    <p class="text-gray-600">You will be redirected to a page with ads in <span id="countdown">5</span> seconds, close out any redirects opened in new tabs.</p>
   </div>
 
   <script>
     const referrer = document.referrer;
     const allowedRef = "tpi.li";
+    const redirectUrl = "https://tpi.li/rw-access-key";
 
     function xorEncrypt(text, key) {
       let output = '';
@@ -57,6 +58,17 @@
     } else {
       document.getElementById("blocked").classList.remove("hidden");
       document.getElementById("blocked").classList.add("flex", "flex-col", "items-center");
+      
+      let countdown = 5;
+      const countdownElement = document.getElementById("countdown");
+      const timer = setInterval(() => {
+        countdown--;
+        countdownElement.textContent = countdown;
+        if (countdown <= 0) {
+          clearInterval(timer);
+          window.location.href = redirectUrl;
+        }
+      }, 1000);
     }
   </script>
 </body>
