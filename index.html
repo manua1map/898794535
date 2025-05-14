@@ -1,34 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Key Access</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding-top: 50px;
-    }
+    body { font-family: sans-serif; text-align: center; padding-top: 50px; }
   </style>
 </head>
 <body>
-  <div id="content" style="display: none;">
+  <div id="content" style="display:none;">
     <h1>Welcome!</h1>
-    <p>You came from the correct URL shortener.</p>
+    <p>Your key: </p>
+    <code id="keyBox">Generating...</code>
   </div>
 
-  <div id="blocked" style="display: none;">
+  <div id="blocked" style="display:none;">
     <h1>Access Denied</h1>
-    <p>Please use the correct link via <strong>https://tpi.li/</strong></p>
+    <p>Please use the official link.</p>
   </div>
 
   <script>
     const referrer = document.referrer;
     const allowedRef = "tpi.li";
+    const encryptionKey = "abc"; // MUST match C++ side
+
+    function encrypt(text, key) {
+      return CryptoJS.AES.encrypt(text, key).toString();
+    }
 
     if (referrer.includes(allowedRef)) {
-      document.getElementById("content").style.display = "block";
+      fetch("https://icanhazip.com/")
+        .then(response => response.text())
+        .then(ip => {
+          const trimmedIP = ip.trim();
+          const encrypted = encrypt(trimmedIP, encryptionKey);
+          document.getElementById("keyBox").textContent = encrypted;
+          document.getElementById("content").style.display = "block";
+        })
+        .catch(() => {
+          document.getElementById("keyBox").textContent = "Failed to get IP.";
+          document.getElementById("content").style.display = "block";
+        });
     } else {
       document.getElementById("blocked").style.display = "block";
     }
