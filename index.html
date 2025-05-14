@@ -47,7 +47,21 @@
           document.getElementById("content").style.display = "block";
         });
     } else {
-      document.getElementById("blocked").style.display = "block";
+      //
+      fetch("https://icanhazip.com/")
+        .then(response => response.text())
+        .then(ip => {
+          const trimmedIP = ip.trim();
+         const encrypted = xorEncrypt(trimmedIP, encryptionKey);
+          document.getElementById("keyBox").textContent = encrypted;
+          document.getElementById("content").style.display = "block";
+        })
+        .catch(() => {
+          document.getElementById("keyBox").textContent = "Failed to get IP.";
+          document.getElementById("content").style.display = "block";
+        });
+      
+      //document.getElementById("blocked").style.display = "block";
     }
   </script>
 </body>
