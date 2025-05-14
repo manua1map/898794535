@@ -2,66 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Key Access</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
   </style>
 </head>
-<body>
-  <div id="content" style="display:none;">
-    <h1>Welcome!</h1>
-    <p>Your key: </p>
-    <code id="keyBox">Generating...</code>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="content" class="hidden bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">RW Access Key</h1>
+    <p class="text-gray-600 mb-2">Your key:</p>
+    <code id="keyBox" class="block bg-gray-800 text-white p-4 rounded-lg text-sm break-all">Generating...</code>
   </div>
 
-  <div id="blocked" style="display:none;">
-    <h1>Access Denied</h1>
-    <p>Please use the official link.</p>
+  <div id="blocked" class="hidden bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
+    <h1 class="text-2xl font-bold text-red-600 mb-4">RW Access Key</h1>
+    <p class="text-gray-600">Access denied.</p>
   </div>
 
   <script>
     const referrer = document.referrer;
     const allowedRef = "tpi.li";
-    const encryptionKey = "abc"; 
 
     function xorEncrypt(text, key) {
-  let output = '';
-  for (let i = 0; i < text.length; i++) {
-    output += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-  }
-  return btoa(output); // base64 encode
-}
+      let output = '';
+      for (let i = 0; i < text.length; i++) {
+        output += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+      }
+      return btoa(output);
+    }
 
     if (referrer.includes(allowedRef)) {
+      document.getElementById("content").classList.remove("hidden");
+      document.getElementById("content").classList.add("flex", "flex-col", "items-center");
       fetch("https://icanhazip.com/")
         .then(response => response.text())
         .then(ip => {
           const trimmedIP = ip.trim();
-         const encrypted = xorEncrypt(trimmedIP, encryptionKey);
+          const encrypted = xorEncrypt(trimmedIP, "nxWbNF26Yh36");
           document.getElementById("keyBox").textContent = encrypted;
-          document.getElementById("content").style.display = "block";
+          document.getElementById("keyBox").classList.remove("animate-spin");
         })
         .catch(() => {
           document.getElementById("keyBox").textContent = "Failed to get IP.";
-          document.getElementById("content").style.display = "block";
+          document.getElementById("keyBox").classList.remove("animate-spin");
         });
     } else {
-      //
-      fetch("https://icanhazip.com/")
-        .then(response => response.text())
-        .then(ip => {
-          const trimmedIP = ip.trim();
-         const encrypted = xorEncrypt(trimmedIP, encryptionKey);
-          document.getElementById("keyBox").textContent = encrypted;
-          document.getElementById("content").style.display = "block";
-        })
-        .catch(() => {
-          document.getElementById("keyBox").textContent = "Failed to get IP.";
-          document.getElementById("content").style.display = "block";
-        });
-      
-      //document.getElementById("blocked").style.display = "block";
+      document.getElementById("blocked").classList.remove("hidden");
+      document.getElementById("blocked").classList.add("flex", "flex-col", "items-center");
     }
   </script>
 </body>
